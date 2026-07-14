@@ -1,3 +1,4 @@
+import { execSync } from "node:child_process";
 import { readFileSync, watch, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 
@@ -46,7 +47,8 @@ function build() {
       .join("\n\n") + "\n";
 
   writeFileSync("dist/script.ts", output);
-  console.log(`[${new Date().toLocaleTimeString()}] dist/script.ts updated`);
+  execSync("pbcopy", { input: output });
+  console.log(`[${new Date().toLocaleTimeString()}] dist/script.ts updated (copied to clipboard)`);
 }
 
 build();
