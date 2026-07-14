@@ -1,51 +1,51 @@
 # office-script-starter
 
-Office Script を複数ファイルに分割してローカルで開発するための環境です。ビルド時に単一ファイルへ結合し、クリップボードにコピーします。
+A local development environment for Office Scripts that splits code across multiple files. On build, they are bundled into a single file and copied to the clipboard.
 
-## セットアップ
+## Setup
 
 ```bash
 npm install
 ```
 
-## 開発
+## Development
 
-| コマンド | 内容 |
+| Command | Description |
 | --- | --- |
-| `npm run build` | `src/` をバンドルして `dist/script.ts` を生成（クリップボードにコピー） |
-| `npm run dev` | `src/` を監視して変更のたびに自動ビルド |
-| `npm test` | テストを実行 |
-| `npm run test:watch` | テストをウォッチモードで実行 |
+| `npm run build` | Bundle `src/` into `dist/script.ts` (auto-copied to clipboard) |
+| `npm run dev` | Watch `src/` and rebuild automatically on every change |
+| `npm test` | Run tests |
+| `npm run test:watch` | Run tests in watch mode |
 
-ビルド後は `dist/script.ts` の内容が自動でクリップボードにコピーされるので、Excel Online の Office Script エディタにそのまま貼り付けて実行できます。
+After each build, `dist/script.ts` is automatically copied to your clipboard — paste it directly into the Office Script editor in Excel Online and run it.
 
-## プロジェクト構成
+## Project structure
 
 ```text
 src/
-  main.ts                 # エントリポイント（Office Script ランタイムが呼び出す）
-  run.ts                  # ビジネスロジック（テスト可能）
-  utils.ts                # 純粋関数
-  workbook-interfaces.ts  # IWorkbook 等の最小インターフェース定義
+  main.ts                 # Entry point (called by the Office Script runtime)
+  run.ts                  # Business logic (testable)
+  utils.ts                # Pure utility functions
+  workbook-interfaces.ts  # Minimal interface definitions (IWorkbook, etc.)
 tests/
   utils.test.ts
   run.test.ts
 dist/
-  script.ts               # ビルド成果物（Excel に貼り付けるファイル）
+  script.ts               # Build artifact (the file to paste into Excel)
 types/
-  excel-script.d.ts       # Microsoft 公式提供の型定義
+  excel-script.d.ts       # Official type definitions provided by Microsoft
 ```
 
-## テスト設計の方針
+## Testing approach
 
-`ExcelScript.Workbook` は Excel ランタイムが提供するオブジェクトのため、テスト環境で生成できません。そのため以下の構成でテスト可能にしています。
+`ExcelScript.Workbook` is provided by the Excel runtime and cannot be instantiated in a test environment. The project works around this as follows:
 
-- `src/workbook-interfaces.ts` に使用するメソッドだけを宣言した最小インターフェース（`IWorkbook` 等）を定義
-- ビジネスロジック（`run.ts`）はこのインターフェースを受け取る。TypeScript の構造的型付けにより `ExcelScript.Workbook` は自動的に満たす
-- エントリポイント（`main.ts`）は `run()` に委譲するだけの薄い層に留める
-- テストではオブジェクトリテラルで簡易なモックを作成する
+- `src/workbook-interfaces.ts` declares minimal interfaces (e.g. `IWorkbook`) with only the methods actually used
+- Business logic (`run.ts`) accepts these interfaces; TypeScript's structural typing means `ExcelScript.Workbook` satisfies them automatically
+- The entry point (`main.ts`) is kept as a thin delegating layer that simply calls `run()`
+- Tests create lightweight mocks using plain object literals
 
-## 参考リンク
+## References
 
-- [Office Scripts 公式ドキュメント](https://github.com/OfficeDev/office-scripts-docs/tree/main)
-- [公式型定義ファイル](https://raw.githubusercontent.com/OfficeDev/office-scripts-docs-reference/main/generate-docs/script-inputs/office-scripts-docs.d.ts)
+- [Office Scripts official documentation](https://github.com/OfficeDev/office-scripts-docs/tree/main)
+- [Official type definition file](https://raw.githubusercontent.com/OfficeDev/office-scripts-docs-reference/main/generate-docs/script-inputs/office-scripts-docs.d.ts)
