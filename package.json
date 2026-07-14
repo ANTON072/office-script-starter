@@ -1,11 +1,6 @@
 {
-  "name": "trial-office-script",
-  "version": "1.0.0",
-  "description": "",
-  "license": "ISC",
-  "author": "",
+  "name": "office-script-starter",
   "type": "module",
-  "main": "index.js",
   "scripts": {
     "build": "node build.mjs",
     "dev": "node build.mjs --watch",

@@ -1,4 +1,4 @@
-# Office Script ローカル開発環境
+# office-script-starter
 
 Office Script を複数ファイルに分割してローカルで開発するための環境です。ビルド時に単一ファイルへ結合し、クリップボードにコピーします。
 
