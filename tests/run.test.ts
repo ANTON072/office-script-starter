@@ -7,7 +7,7 @@ describe("run", () => {
       getActiveWorksheet: () => ({
         getCell: () => ({ getValue: () => "  hello  " }),
       }),
-    };
+    } as unknown as ExcelScript.Workbook;
     expect(run(workbook)).toBe("hello");
   });
 
@@ -16,7 +16,7 @@ describe("run", () => {
       getActiveWorksheet: () => ({
         getCell: () => ({ getValue: () => null }),
       }),
-    };
+    } as unknown as ExcelScript.Workbook;
     expect(run(workbook)).toBe("");
   });
 });
