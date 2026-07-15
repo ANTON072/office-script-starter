@@ -1,5 +1,5 @@
 import { execSync } from "node:child_process";
-import { readFileSync, watch, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, watch, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 
 const isWatch = process.argv.includes("--watch");
@@ -46,6 +46,7 @@ function build() {
       })
       .join("\n\n") + "\n";
 
+  mkdirSync("dist", { recursive: true });
   writeFileSync("dist/script.ts", output);
   execSync("pbcopy", { input: output });
   console.log(`[${new Date().toLocaleTimeString()}] dist/script.ts updated (copied to clipboard)`);
