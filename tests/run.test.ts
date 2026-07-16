@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { run } from "../src/run";
+import { run } from "../src/lib/run";
 
 describe("run", () => {
   it("A1 セルの値を整形して返す", () => {

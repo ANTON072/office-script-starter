@@ -1,9 +1,9 @@
 import { execSync } from "node:child_process";
-import { mkdirSync, readFileSync, watch, writeFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
+import { mkdirSync, readdirSync, readFileSync, watch, writeFileSync } from "node:fs";
+import { basename, dirname, resolve } from "node:path";
 
 const isWatch = process.argv.includes("--watch");
-const entryPath = resolve("src/main.ts");
+const scriptsDir = resolve("src/scripts");
 
 /** import を再帰解決してモジュール一覧を依存順で返す */
 function collectModules(filePath, visited = new Set()) {
@@ -34,7 +34,7 @@ function stripModuleSyntax(content) {
     .trim();
 }
 
-function build() {
+function buildScript(entryPath) {
   const modules = collectModules(entryPath);
   const cwd = process.cwd();
 
@@ -46,10 +46,33 @@ function build() {
       })
       .join("\n\n") + "\n";
 
+  const name = basename(entryPath, ".ts");
   mkdirSync("dist", { recursive: true });
-  writeFileSync("dist/script.ts", output);
-  execSync("pbcopy", { input: output });
-  console.log(`[${new Date().toLocaleTimeString()}] dist/script.ts updated (copied to clipboard)`);
+  writeFileSync(`dist/${name}.ts`, output);
+  return { name, output };
+}
+
+function build() {
+  const entries = readdirSync(scriptsDir)
+    .filter((f) => f.endsWith(".ts"))
+    .map((f) => resolve(scriptsDir, f));
+
+  if (entries.length === 0) {
+    console.warn("No .ts files found in src/scripts/");
+    return;
+  }
+
+  const results = entries.map(buildScript);
+  const time = new Date().toLocaleTimeString();
+
+  if (results.length === 1) {
+    execSync("pbcopy", { input: results[0].output });
+    console.log(`[${time}] dist/${results[0].name}.ts updated (copied to clipboard)`);
+  } else {
+    for (const { name } of results) {
+      console.log(`[${time}] dist/${name}.ts updated`);
+    }
+  }
 }
 
 build();

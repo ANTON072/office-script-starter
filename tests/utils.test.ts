@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatCellValue } from "../src/utils";
+import { formatCellValue } from "../src/lib/utils";
 
 describe("formatCellValue", () => {
   it("null を空文字にする", () => expect(formatCellValue(null)).toBe(""));
